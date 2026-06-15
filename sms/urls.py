@@ -28,10 +28,10 @@ urlpatterns = [
     path('', include('home_page.urls')),
     
     path('admin/', admin.site.urls),
-    path('api/accounts/', include("accounts.urls")),
-    path('api/students/', include("students.urls")),
-    path('api/courses/', include('courses.urls')),
-    path('api/register/', include('register.urls')),
+    path('api/v1/accounts/', include("accounts.urls")),
+    path('api/v1/students/', include("students.urls")),
+    path('api/v1/', include('courses.urls')),
+    path('api/v1/register/', include('register.urls')),
     #for jwt authentication
     path('api/token/', TokenObtainPairView.as_view()),
     path('api/token/refresh/', TokenRefreshView.as_view()),
