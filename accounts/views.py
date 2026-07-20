@@ -5,7 +5,7 @@ from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 
 
-class CreateAccount (generics.ListCreateAPIView):
+class CreateAccount (generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = AccountSerializer
     # permission_classes = [permissions.IsAdminUser]
