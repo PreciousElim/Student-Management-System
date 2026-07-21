@@ -86,12 +86,14 @@ WSGI_APPLICATION = 'sms.wsgi.application'
 
 
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
+import dj_database_url
 from decouple import config
 
 
@@ -106,7 +108,12 @@ from decouple import config
 #     }
 # }
 
-
+DATABASES = {
+        'default': dj_database_url.config(
+            default=config('DATABASE_URL', default=f'sqlite:///{BASE_DIR / "db.sqlite3"}'),
+            conn_max_age=600,
+        )
+    }
 
 
 # Password validation
