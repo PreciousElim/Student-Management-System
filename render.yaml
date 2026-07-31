@@ -10,7 +10,7 @@ services:
     name: student-management-system
     runtime: python
     plan: free
-    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate
+    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate && python manage.py createsuperuser --noinput || true
     startCommand: gunicorn sms.wsgi:application
 
     envVars:
@@ -26,3 +26,9 @@ services:
         value: ".onrender.com"
       - key: PYTHON_VERSION
         value: "3.12.0"
+      - key: DJANGO_SUPERUSER_USERNAME
+        value: admin
+      - key: DJANGO_SUPERUSER_EMAIL
+        value: official3lim@gmail.com
+      - key: DJANGO_SUPERUSER_PASSWORD
+        sync: False
