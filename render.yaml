@@ -27,7 +27,7 @@ services:
       - key: PYTHON_VERSION
         value: "3.12.0"
       - key: DJANGO_SUPERUSER_USERNAME
-        value: admin
+        value: admin1
       - key: DJANGO_SUPERUSER_EMAIL
         value: official3lim@gmail.com
       - key: DJANGO_SUPERUSER_PASSWORD
