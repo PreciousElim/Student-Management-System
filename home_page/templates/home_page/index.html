@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Management System</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, 'Segoe UI', Roboto, sans-serif; background: #f4f6f5; color: #1a2b23; }
+  header { background: #0e3b2e; color: #fff; padding: 18px 28px; display: flex; justify-content: space-between; align-items: center; }
+  header h1 { font-size: 1.15rem; font-weight: 600; letter-spacing: 0.3px; }
+  header .who { font-size: 0.85rem; opacity: 0.85; }
+  .wrap { max-width: 1060px; margin: 26px auto; padding: 0 18px; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; margin-bottom: 22px; }
+  .card { background: #fff; border-radius: 10px; padding: 18px; box-shadow: 0 1px 4px rgba(14,59,46,0.08); }
+  .card .num { font-size: 1.9rem; font-weight: 700; color: #0e3b2e; }
+  .card .lbl { font-size: 0.8rem; color: #5c6f66; margin-top: 2px; text-transform: uppercase; letter-spacing: 0.06em; }
+  nav { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+  nav button { border: 1px solid #cfd9d4; background: #fff; padding: 9px 18px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; color: #1a2b23; }
+  nav button.active { background: #0e3b2e; color: #fff; border-color: #0e3b2e; }
+  section { background: #fff; border-radius: 10px; padding: 20px; box-shadow: 0 1px 4px rgba(14,59,46,0.08); }
+  table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+  th { text-align: left; color: #5c6f66; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; padding: 8px 10px; border-bottom: 2px solid #eef2f0; }
+  td { padding: 10px; border-bottom: 1px solid #eef2f0; }
+  .pill { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 0.78rem; background: #e7f0ec; color: #0e3b2e; }
+  form.reg { display: grid; grid-template-columns: 1fr 1fr auto; gap: 12px; align-items: end; margin-bottom: 18px; }
+  label { font-size: 0.78rem; color: #5c6f66; display: block; margin-bottom: 4px; }
+  select, input { width: 100%; padding: 9px 10px; border: 1px solid #cfd9d4; border-radius: 8px; font-size: 0.9rem; background: #fff; }
+  .btn { background: #0e3b2e; color: #fff; border: none; padding: 10px 22px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .btn:hover { background: #14503f; }
+  .msg { padding: 10px 14px; border-radius: 8px; margin-bottom: 14px; font-size: 0.88rem; display: none; }
+  .msg.ok { background: #e7f0ec; color: #0e3b2e; display: block; }
+  .msg.err { background: #fbeaea; color: #8a2323; display: block; }
+  .login-box { max-width: 380px; margin: 40px auto; background: #fff; padding: 26px; border-radius: 12px; box-shadow: 0 2px 10px rgba(14,59,46,0.12); }
+  .login-box h2 { font-size: 1.05rem; margin-bottom: 14px; color: #0e3b2e; }
+  .login-box input { margin-bottom: 10px; }
+  .hidden { display: none; }
+  footer { text-align: center; color: #8ba197; font-size: 0.78rem; padding: 24px 0 36px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Student Management System</h1>
+  <div class="who" id="who">Not signed in</div>
+</header>
+
+<div class="wrap">
+  <div id="loginView" class="login-box">
+    <h2>Staff sign in</h2>
+    <div class="msg err" id="loginErr"></div>
+    <label>Username</label>
+    <input id="u" autocomplete="username">
+    <label>Password</label>
+    <input id="p" type="password" autocomplete="current-password">
+    <button class="btn" style="width:100%;margin-top:6px" onclick="login()">Sign in</button>
+  </div>
+
+  <div id="appView" class="hidden">
+    <div class="cards">
+      <div class="card"><div class="num" id="nStudents">0</div><div class="lbl">Students</div></div>
+      <div class="card"><div class="num" id="nCourses">0</div><div class="lbl">Courses</div></div>
+      <div class="card"><div class="num" id="nRegs">0</div><div class="lbl">Registrations</div></div>
+      <div class="card"><div class="num" id="nDepts">0</div><div class="lbl">Departments</div></div>
+    </div>
+
+    <nav>
+      <button class="active" data-tab="students" onclick="show('students', this)">Students</button>
+      <button data-tab="courses" onclick="show('courses', this)">Courses</button>
+      <button data-tab="regs" onclick="show('regs', this)">Course Registration</button>
+      <button data-tab="depts" onclick="show('depts', this)">Departments</button>
+    </nav>
+
+    <section id="tab-students">
+      <table><thead><tr><th>Matric No</th><th>Name</th><th>Department</th><th>Level</th><th>Email</th></tr></thead><tbody id="tbStudents"></tbody></table>
+    </section>
+
+    <section id="tab-courses" class="hidden">
+      <table><thead><tr><th>Code</th><th>Title</th><th>Level</th><th>Semester</th><th>Units</th></tr></thead><tbody id="tbCourses"></tbody></table>
+    </section>
+
+    <section id="tab-depts" class="hidden">
+        <table><thead><tr><th>Dept Name</th></tr></thead><tbody id="tbDepts"></tbody></table>
+    </section>
+
+    <section id="tab-regs" class="hidden">
+      <div class="msg" id="regMsg"></div>
+      <form class="reg" onsubmit="registerCourse(event)">
+        <div><label>Student</label><select id="selStudent"></select></div>
+        <div><label>Course</label><select id="selCourse"></select></div>
+        <button class="btn">Register</button>
+      </form>
+      <table><thead><tr><th>Student</th><th>Course</th><th>Session</th><th>Date</th></tr></thead><tbody id="tbRegs"></tbody></table>
+    </section>
+  </div>
+</div>
+
+<footer>Built by Precious Elim. Powered by the SMS REST API.</footer>
+
+<script>
+let token = null;
+let cache = { students: [], courses: [], depts: [] };
+// send token
+async function api(path, opts = {}) {
+  opts.headers = Object.assign({ 'Content-Type': 'application/json' }, opts.headers || {});
+  if (token) opts.headers['Authorization'] = 'Bearer ' + token;
+  const r = await fetch(path, opts);
+  const body = await r.json().catch(() => ({}));
+  return { ok: r.ok, status: r.status, body };
+}
+// sign in
+async function login() {
+  const r = await api('/api/token/', { method: 'POST', body: JSON.stringify({ username: u.value, password: p.value }) });
+  if (!r.ok) { loginErr.textContent = 'Sign in failed. Check the details and try again.'; loginErr.className = 'msg err'; return; }
+  token = r.body.access;
+  who.textContent = 'Signed in as ' + u.value;
+  loginView.classList.add('hidden');
+  appView.classList.remove('hidden');
+  await loadAll();
+}
+// Read all
+async function loadAll() {
+  const [st, co, de, re] = await Promise.all([
+    api('/api/v1/students/'), api('/api/v1/courses/'), api('/api/v1/departments/'), api('/api/v1/register/'),
+  ]);
+  cache.students = st.body; cache.courses = co.body; cache.depts = de.body;
+  nStudents.textContent = st.body.length; nCourses.textContent = co.body.length;
+  nDepts.textContent = de.body.length; nRegs.textContent = re.body.length;
+  const dName = id => (cache.depts.find(d => d.id === id) || {}).name || id;
+  tbStudents.innerHTML = st.body.map(s => `<tr><td><span class="pill">${s.matric_number}</span></td><td>${s.first_name} ${s.last_name}</td><td>${dName(s.department)}</td><td>${s.level}</td><td>${s.email}</td></tr>`).join('');
+  tbCourses.innerHTML = co.body.map(c => `<tr><td><span class="pill">${c.course_code}</span></td><td>${c.course_title}</td><td>${c.level}</td><td>${c.semester}</td><td>${c.course_unit}</td></tr>`).join('');
+  tbRegs.innerHTML = re.body.map(g => `<tr><td>${g.student_name}</td><td>${g.course_title}</td><td>${g.session}</td><td>${new Date(g.date_registered).toLocaleDateString()}</td></tr>`).join('');
+  tbDepts.innerHTML = de.body.map(d=> `<tr><td>${d.name}</td></tr>`).join('');
+  selStudent.innerHTML = st.body.map(s => `<option value="${s.id}">${s.matric_number} ${s.first_name} ${s.last_name} (level ${s.level})</option>`).join('');
+  selCourse.innerHTML = co.body.map(c => `<option value="${c.id}">${c.course_code} ${c.course_title} (level ${c.level})</option>`).join('');
+}
+// Write
+async function registerCourse(e) {
+  e.preventDefault();
+  const r = await api('/api/v1/register/', { method: 'POST', body: JSON.stringify({ student: Number(selStudent.value), course: Number(selCourse.value) }) });
+  if (r.ok) { regMsg.textContent = 'Registered: ' + r.body.student_name + ' into ' + r.body.course_title; regMsg.className = 'msg ok'; }
+  else { regMsg.textContent = Object.values(r.body).flat().join(' '); regMsg.className = 'msg err'; }
+  await loadAll();
+}
+
+function show(tab, btn) {
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  ['students', 'courses', 'regs', 'depts'].forEach(t => document.getElementById('tab-' + t).classList.toggle('hidden', t !== tab));
+}
+</script>
+</body>
+</html>
