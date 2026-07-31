@@ -32,3 +32,5 @@ services:
         value: official3lim@gmail.com
       - key: DJANGO_SUPERUSER_PASSWORD
         sync: False
+      - key: DJANGO_SUPERUSER_STAFF_ID
+        value: STAFF001
