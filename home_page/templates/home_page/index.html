@@ -97,7 +97,7 @@
 <footer>Built by Precious Elim. Powered by the SMS REST API.</footer>
 
 <script>
-let token = null;
+let token = localStorage.getItem('sms_token');
 let cache = { students: [], courses: [], depts: [] };
 // send token
 async function api(path, opts = {}) {
@@ -146,6 +146,12 @@ function show(tab, btn) {
   document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   ['students', 'courses', 'regs', 'depts'].forEach(t => document.getElementById('tab-' + t).classList.toggle('hidden', t !== tab));
+}
+
+if (token) {
+  loginView.classList.add('hidden');
+  appView.classList.remove('hidden');
+  loadAll();
 }
 </script>
 </body>
