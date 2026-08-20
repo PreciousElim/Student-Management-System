@@ -112,6 +112,7 @@ async function login() {
   const r = await api('/api/token/', { method: 'POST', body: JSON.stringify({ username: u.value, password: p.value }) });
   if (!r.ok) { loginErr.textContent = 'Sign in failed. Check the details and try again.'; loginErr.className = 'msg err'; return; }
   token = r.body.access;
+  localStorage.setItem('sms_token', token);
   who.textContent = 'Signed in as ' + u.value;
   loginView.classList.add('hidden');
   appView.classList.remove('hidden');
