@@ -13,7 +13,7 @@ class StudentList (generics.ListCreateAPIView):
     def get_permissions(self):
         if self.request.method == 'POST':
             return [permissions.IsAdminUser()]
-        return [permissions.AllowAny()]
+        return [permissions.IsAuthenticated()]
     
 class StudentDetail (generics.RetrieveUpdateDestroyAPIView):
     queryset = Student.objects.all()
@@ -22,7 +22,7 @@ class StudentDetail (generics.RetrieveUpdateDestroyAPIView):
     def get_permissions(self):
         if self.request.method in ['PUT', 'PATCH', 'DELETE']:
             return [permissions.IsAdminUser()]
-        return [permissions.AllowAny()]
+        return [permissions.IsAuthenticated()]
     
     
     

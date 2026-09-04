@@ -33,8 +33,8 @@ urlpatterns = [
     path('api/v1/', include('courses.urls')),
     path('api/v1/', include('register.urls')),
     #for jwt authentication
-    path('api/token/', TokenObtainPairView.as_view()),
-    path('api/token/refresh/', TokenRefreshView.as_view()),
+    path('api/token/', TokenObtainPairView.as_view(), name='access-token'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='refresh-token'),
 ]
     
 
