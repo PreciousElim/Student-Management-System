@@ -1,2 +1,3 @@
 # Student-Management-System
-All about managing Student's Data 
+All about managing Student's Data.... 
+This system is for school staff. Nothing is readable or writable without a login. Only an admin can create, change or delete anything. Staff accounts are created by an admin, never self served and they also have some permissions that they carryout.
