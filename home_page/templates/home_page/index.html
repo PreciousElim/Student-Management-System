@@ -7,9 +7,12 @@
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, 'Segoe UI', Roboto, sans-serif; background: #f4f6f5; color: #1a2b23; }
-  header { background: #0e3b2e; color: #fff; padding: 18px 28px; display: flex; justify-content: space-between; align-items: center; }
+  header { background: #0e3b2e; color: #fff; padding: 18px 28px; display: flex; justify-content: space-between; align-items: center; gap: 14px; }
   header h1 { font-size: 1.15rem; font-weight: 600; letter-spacing: 0.3px; }
+  header .right { display: flex; align-items: center; gap: 14px; }
   header .who { font-size: 0.85rem; opacity: 0.85; }
+  .linkbtn { background: transparent; border: 1px solid rgba(255,255,255,0.45); color: #fff; padding: 6px 14px; border-radius: 8px; font-size: 0.8rem; cursor: pointer; }
+  .linkbtn:hover { background: rgba(255,255,255,0.12); }
   .wrap { max-width: 1060px; margin: 26px auto; padding: 0 18px; }
   .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; margin-bottom: 22px; }
   .card { background: #fff; border-radius: 10px; padding: 18px; box-shadow: 0 1px 4px rgba(14,59,46,0.08); }
@@ -23,7 +26,9 @@
   th { text-align: left; color: #5c6f66; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; padding: 8px 10px; border-bottom: 2px solid #eef2f0; }
   td { padding: 10px; border-bottom: 1px solid #eef2f0; }
   .pill { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 0.78rem; background: #e7f0ec; color: #0e3b2e; }
-  form.reg { display: grid; grid-template-columns: 1fr 1fr auto; gap: 12px; align-items: end; margin-bottom: 18px; }
+  form.reg { display: grid; grid-template-columns: 1fr 1fr 150px auto; gap: 12px; align-items: end; margin-bottom: 18px; }
+  form.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; align-items: end; margin-bottom: 18px; }
+  form.grid .full { grid-column: 1 / -1; }
   label { font-size: 0.78rem; color: #5c6f66; display: block; margin-bottom: 4px; }
   select, input { width: 100%; padding: 9px 10px; border: 1px solid #cfd9d4; border-radius: 8px; font-size: 0.9rem; background: #fff; }
   .btn { background: #0e3b2e; color: #fff; border: none; padding: 10px 22px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
@@ -31,17 +36,34 @@
   .msg { padding: 10px 14px; border-radius: 8px; margin-bottom: 14px; font-size: 0.88rem; display: none; }
   .msg.ok { background: #e7f0ec; color: #0e3b2e; display: block; }
   .msg.err { background: #fbeaea; color: #8a2323; display: block; }
+  .subhead { font-size: 0.8rem; color: #5c6f66; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px; }
+  .rule { border: 0; border-top: 1px solid #eef2f0; margin: 6px 0 18px; }
   .login-box { max-width: 380px; margin: 40px auto; background: #fff; padding: 26px; border-radius: 12px; box-shadow: 0 2px 10px rgba(14,59,46,0.12); }
   .login-box h2 { font-size: 1.05rem; margin-bottom: 14px; color: #0e3b2e; }
   .login-box input { margin-bottom: 10px; }
   .hidden { display: none; }
+  .hint { font-size: 0.78rem; color: #8ba197; margin-bottom: 10px; }
+  tbody tr.clickable { cursor: pointer; }
+  tbody tr.clickable:hover { background: #f4f8f6; }
+  .btn.danger { background: #8a2323; }
+  .btn.danger:hover { background: #a12b2b; }
+  .linkbtn.dark { border-color: #cfd9d4; color: #1a2b23; }
+  .linkbtn.dark:hover { background: #eef2f0; }
+  .backdrop { position: fixed; inset: 0; background: rgba(14,59,46,0.45); display: flex; align-items: flex-start; justify-content: center; padding: 40px 18px; overflow-y: auto; z-index: 50; }
+  .panel { background: #fff; border-radius: 12px; padding: 24px; width: 100%; max-width: 760px; box-shadow: 0 8px 30px rgba(0,0,0,0.2); }
+  .panel-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 14px; margin-bottom: 18px; }
+  .panel-title { font-size: 1.15rem; font-weight: 600; color: #0e3b2e; }
+  .panel-sub { font-size: 0.82rem; color: #5c6f66; margin-top: 3px; }
   footer { text-align: center; color: #8ba197; font-size: 0.78rem; padding: 24px 0 36px; }
 </style>
 </head>
 <body>
 <header>
   <h1>Student Management System</h1>
-  <div class="who" id="who">Not signed in</div>
+  <div class="right">
+    <div class="who" id="who">Not signed in</div>
+    <button class="linkbtn hidden" id="logoutBtn" onclick="logout()">Log out</button>
+  </div>
 </header>
 
 <div class="wrap">
@@ -61,7 +83,7 @@
       <div class="card"><div class="num" id="nCourses">0</div><div class="lbl">Courses</div></div>
       <div class="card"><div class="num" id="nRegs">0</div><div class="lbl">Registrations</div></div>
       <div class="card"><div class="num" id="nDepts">0</div><div class="lbl">Departments</div></div>
-    </div> 
+    </div>
 
     <nav>
       <button class="active" data-tab="students" onclick="show('students', this)">Students</button>
@@ -71,24 +93,115 @@
     </nav>
 
     <section id="tab-students">
+      <div class="subhead">Add a student</div>
+      <div class="msg" id="studentMsg"></div>
+      <form class="grid" onsubmit="createStudent(event)">
+        <div><label>First name</label><input id="sFirst" required></div>
+        <div><label>Last name</label><input id="sLast" required></div>
+        <div><label>Matric number</label><input id="sMatric" maxlength="7" required></div>
+        <div><label>Email</label><input id="sEmail" type="email" required></div>
+        <div><label>Department</label><select id="sDept" required></select></div>
+        <div><label>Level</label>
+          <select id="sLevel" required>
+            <option value="100">100</option><option value="200">200</option>
+            <option value="300">300</option><option value="400">400</option>
+          </select>
+        </div>
+        <div><label>Age</label><input id="sAge" type="number" min="10" max="99" required></div>
+        <div><button class="btn" style="width:100%">Add student</button></div>
+      </form>
+      <hr class="rule">
+      <div class="hint">Click any row to open that student's profile.</div>
       <table><thead><tr><th>Matric No</th><th>Name</th><th>Department</th><th>Level</th><th>Email</th></tr></thead><tbody id="tbStudents"></tbody></table>
     </section>
 
+    <div id="profileBack" class="backdrop hidden" onclick="closeProfile(event)">
+      <div class="panel" onclick="event.stopPropagation()">
+        <div class="panel-head">
+          <div>
+            <div class="panel-title" id="pTitle">Student</div>
+            <div class="panel-sub" id="pSub"></div>
+          </div>
+          <button class="linkbtn dark" onclick="closeProfile()">Close</button>
+        </div>
+        <div class="msg" id="profileMsg"></div>
+
+        <div class="subhead">Details</div>
+        <form class="grid" onsubmit="saveStudent(event)">
+          <div><label>First name</label><input id="pFirst" required></div>
+          <div><label>Last name</label><input id="pLast" required></div>
+          <div><label>Matric number</label><input id="pMatric" maxlength="7" required></div>
+          <div><label>Email</label><input id="pEmail" type="email" required></div>
+          <div><label>Department</label><select id="pDept" required></select></div>
+          <div><label>Level</label>
+            <select id="pLevel" required>
+              <option value="100">100</option><option value="200">200</option>
+              <option value="300">300</option><option value="400">400</option>
+            </select>
+          </div>
+          <div><label>Age</label><input id="pAge" type="number" min="10" max="99" required></div>
+          <div class="full" style="display:flex;gap:10px;flex-wrap:wrap">
+            <button class="btn">Save changes</button>
+            <button type="button" class="btn danger" onclick="deleteStudent()">Delete student</button>
+          </div>
+        </form>
+
+        <hr class="rule">
+        <div class="subhead">Courses available to this student (department and level)</div>
+        <table><thead><tr><th>Code</th><th>Title</th><th>Semester</th><th>Units</th></tr></thead><tbody id="pCourses"></tbody></table>
+
+        <div class="subhead" style="margin-top:20px">Courses this student has registered</div>
+        <table><thead><tr><th>Course</th><th>Session</th><th>Date</th></tr></thead><tbody id="pRegs"></tbody></table>
+      </div>
+    </div>
+
     <section id="tab-courses" class="hidden">
+      <div class="subhead">Add a course</div>
+      <div class="msg" id="courseMsg"></div>
+      <form class="grid" onsubmit="createCourse(event)">
+        <div><label>Course code</label><input id="cCode" maxlength="10" required></div>
+        <div><label>Course title</label><input id="cTitle" required></div>
+        <div><label>Department</label><select id="cDept" required></select></div>
+        <div><label>Level</label>
+          <select id="cLevel" required>
+            <option value="100">100</option><option value="200">200</option>
+            <option value="300">300</option><option value="400">400</option>
+          </select>
+        </div>
+        <div><label>Semester</label>
+          <select id="cSemester" required>
+            <option value="first">First Semester</option>
+            <option value="second">Second Semester</option>
+          </select>
+        </div>
+        <div><label>Course units</label><input id="cUnit" type="number" min="1" max="12" required></div>
+        <div><button class="btn" style="width:100%">Add course</button></div>
+      </form>
+      <hr class="rule">
       <table><thead><tr><th>Code</th><th>Title</th><th>Level</th><th>Semester</th><th>Units</th></tr></thead><tbody id="tbCourses"></tbody></table>
     </section>
 
     <section id="tab-depts" class="hidden">
-        <table><thead><tr><th>Dept Name</th></tr></thead><tbody id="tbDepts"></tbody></table>
+      <div class="subhead">Add a department</div>
+      <div class="msg" id="deptMsg"></div>
+      <form class="grid" onsubmit="createDepartment(event)">
+        <div class="full"><label>Department name</label><input id="dName" required></div>
+        <div><button class="btn" style="width:100%">Add department</button></div>
+      </form>
+      <hr class="rule">
+      <table><thead><tr><th>Dept Name</th></tr></thead><tbody id="tbDepts"></tbody></table>
     </section>
 
     <section id="tab-regs" class="hidden">
+      <div class="subhead">Register a student for a course</div>
       <div class="msg" id="regMsg"></div>
       <form class="reg" onsubmit="registerCourse(event)">
         <div><label>Student</label><select id="selStudent"></select></div>
         <div><label>Course</label><select id="selCourse"></select></div>
+        <div><label>Session</label><input id="selSession" value="2025/2026"></div>
         <button class="btn">Register</button>
       </form>
+      <hr class="rule">
       <table><thead><tr><th>Student</th><th>Course</th><th>Session</th><th>Date</th></tr></thead><tbody id="tbRegs"></tbody></table>
     </section>
   </div>
@@ -97,58 +210,363 @@
 <footer>Built by Precious Elim. Powered by the SMS REST API.</footer>
 
 <script>
-let token = localStorage.getItem('sms_token');
-let cache = { students: [], courses: [], depts: [] };
-// send token
-async function api(path, opts = {}) {
-  opts.headers = Object.assign({ 'Content-Type': 'application/json' }, opts.headers || {});
-  if (token) opts.headers['Authorization'] = 'Bearer ' + token;
-  const r = await fetch(path, opts);
+let token    = localStorage.getItem('sms_token');
+let refresh  = localStorage.getItem('sms_refresh');
+let username = localStorage.getItem('sms_user');
+
+let cache = { students: [], courses: [], depts: [], regs: [] };
+let openStudentId = null;
+let deleteArmed   = false;
+
+const asList = v => Array.isArray(v) ? v : [];
+
+function setWho() {
+  who.textContent = username ? 'Signed in as ' + username : 'Not signed in';
+  logoutBtn.classList.toggle('hidden', !username);
+}
+
+function say(el, text, ok) {
+  el.textContent = text;
+  el.className = 'msg ' + (ok ? 'ok' : 'err');
+}
+
+function errText(body) {
+  if (!body || typeof body !== 'object') return 'Something went wrong.';
+  const parts = [];
+  for (const value of Object.values(body)) {
+    if (Array.isArray(value)) parts.push(value.join(' '));
+    else if (value && typeof value === 'object') parts.push(Object.values(value).flat().join(' '));
+    else parts.push(String(value));
+  }
+  return parts.join(' ') || 'Something went wrong.';
+}
+
+async function rawApi(path, opts) {
+  const headers = Object.assign({ 'Content-Type': 'application/json' }, opts.headers || {});
+  if (token) headers['Authorization'] = 'Bearer ' + token;
+  const r = await fetch(path, { method: opts.method || 'GET', body: opts.body, headers });
   const body = await r.json().catch(() => ({}));
   return { ok: r.ok, status: r.status, body };
 }
-// sign in
-async function login() {
-  const r = await api('/api/token/', { method: 'POST', body: JSON.stringify({ username: u.value, password: p.value }) });
-  if (!r.ok) { loginErr.textContent = 'Sign in failed. Check the details and try again.'; loginErr.className = 'msg err'; return; }
-  token = r.body.access;
+
+async function renewToken() {
+  if (!refresh) return false;
+  const r = await fetch('/api/token/refresh/', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ refresh: refresh })
+  });
+  if (!r.ok) return false;
+  const body = await r.json().catch(() => ({}));
+  if (!body.access) return false;
+  token = body.access;
   localStorage.setItem('sms_token', token);
-  who.textContent = 'Signed in as ' + u.value;
+  if (body.refresh) {
+    refresh = body.refresh;
+    localStorage.setItem('sms_refresh', refresh);
+  }
+  return true;
+}
+
+async function api(path, opts = {}) {
+  let res = await rawApi(path, opts);
+  const isAuthRoute = path.indexOf('/api/token/') === 0;
+  if (res.status === 401 && !isAuthRoute && refresh) {
+    const renewed = await renewToken();
+    if (renewed) res = await rawApi(path, opts);
+    else { logout(); return res; }
+  }
+  return res;
+}
+
+async function login() {
+  const r = await api('/api/token/', {
+    method: 'POST',
+    body: JSON.stringify({ username: u.value, password: p.value })
+  });
+  if (!r.ok) {
+    say(loginErr, 'Sign in failed. Check the details and try again.', false);
+    return;
+  }
+  token    = r.body.access;
+  refresh  = r.body.refresh;
+  username = u.value;
+  localStorage.setItem('sms_token', token);
+  localStorage.setItem('sms_refresh', refresh);
+  localStorage.setItem('sms_user', username);
+  loginErr.className = 'msg';
+  setWho();
   loginView.classList.add('hidden');
   appView.classList.remove('hidden');
   await loadAll();
 }
-// Read all
+
+async function logout() {
+  if (refresh) {
+    await rawApi('/api/v1/accounts/logout/', {
+      method: 'POST',
+      body: JSON.stringify({ refresh: refresh })
+    }).catch(() => {});
+  }
+  token = null; refresh = null; username = null;
+  localStorage.removeItem('sms_token');
+  localStorage.removeItem('sms_refresh');
+  localStorage.removeItem('sms_user');
+  setWho();
+  appView.classList.add('hidden');
+  loginView.classList.remove('hidden');
+  u.value = ''; p.value = '';
+}
+
+const deptName = id => (cache.depts.find(d => d.id === id) || {}).name || id;
+
+const studentName = id => {
+  const s = cache.students.find(x => x.id === id);
+  return s ? (s.first_name + ' ' + s.last_name) : ('Student #' + id);
+};
+
+const courseName = id => {
+  const c = cache.courses.find(x => x.id === id);
+  return c ? (c.course_code + ' ' + c.course_title) : ('Course #' + id);
+};
+
+const regStudentName = g => g.student_name || studentName(g.student);
+const regCourseName  = g => g.course_title || courseName(g.course);
+
+const dateText = row => {
+  const raw = row.registered_date || row.date_registered;
+  if (!raw) return '-';
+  const d = new Date(raw);
+  return isNaN(d.getTime()) ? '-' : d.toLocaleDateString();
+};
+
 async function loadAll() {
   const [st, co, de, re] = await Promise.all([
-    api('/api/v1/students/'), api('/api/v1/courses/'), api('/api/v1/departments/'), api('/api/v1/register/'),
+    api('/api/v1/students/'),
+    api('/api/v1/courses/'),
+    api('/api/v1/departments/'),
+    api('/api/v1/register/')
   ]);
-  cache.students = st.body; cache.courses = co.body; cache.depts = de.body;
-  nStudents.textContent = st.body.length; nCourses.textContent = co.body.length;
-  nDepts.textContent = de.body.length; nRegs.textContent = re.body.length;
-  const dName = id => (cache.depts.find(d => d.id === id) || {}).name || id;
-  tbStudents.innerHTML = st.body.map(s => `<tr><td><span class="pill">${s.matric_number}</span></td><td>${s.first_name} ${s.last_name}</td><td>${dName(s.department)}</td><td>${s.level}</td><td>${s.email}</td></tr>`).join('');
-  tbCourses.innerHTML = co.body.map(c => `<tr><td><span class="pill">${c.course_code}</span></td><td>${c.course_title}</td><td>${c.level}</td><td>${c.semester}</td><td>${c.course_unit}</td></tr>`).join('');
-  tbRegs.innerHTML = re.body.map(g => `<tr><td>${g.student_name}</td><td>${g.course_title}</td><td>${g.session}</td><td>${new Date(g.date_registered).toLocaleDateString()}</td></tr>`).join('');
-  tbDepts.innerHTML = de.body.map(d=> `<tr><td>${d.name}</td></tr>`).join('');
-  selStudent.innerHTML = st.body.map(s => `<option value="${s.id}">${s.matric_number} ${s.first_name} ${s.last_name} (level ${s.level})</option>`).join('');
-  selCourse.innerHTML = co.body.map(c => `<option value="${c.id}">${c.course_code} ${c.course_title} (level ${c.level})</option>`).join('');
+
+  cache.students = asList(st.body);
+  cache.courses  = asList(co.body);
+  cache.depts    = asList(de.body);
+  cache.regs     = asList(re.body);
+
+  nStudents.textContent = cache.students.length;
+  nCourses.textContent  = cache.courses.length;
+  nDepts.textContent    = cache.depts.length;
+  nRegs.textContent     = cache.regs.length;
+
+  tbStudents.innerHTML = cache.students.map(s =>
+    `<tr class="clickable" onclick="openProfile(${s.id})"><td><span class="pill">${s.matric_number}</span></td><td>${s.first_name} ${s.last_name}</td><td>${deptName(s.department)}</td><td>${s.level}</td><td>${s.email}</td></tr>`
+  ).join('');
+
+  tbCourses.innerHTML = cache.courses.map(c =>
+    `<tr><td><span class="pill">${c.course_code}</span></td><td>${c.course_title}</td><td>${c.level}</td><td>${c.semester}</td><td>${c.course_unit}</td></tr>`
+  ).join('');
+
+  tbDepts.innerHTML = cache.depts.map(d => `<tr><td>${d.name}</td></tr>`).join('');
+
+  tbRegs.innerHTML = cache.regs.map(g =>
+    `<tr><td>${regStudentName(g)}</td><td>${regCourseName(g)}</td><td>${g.session}</td><td>${dateText(g)}</td></tr>`
+  ).join('');
+
+  selStudent.innerHTML = cache.students.map(s =>
+    `<option value="${s.id}">${s.matric_number} ${s.first_name} ${s.last_name} (level ${s.level})</option>`
+  ).join('');
+
+  selCourse.innerHTML = cache.courses.map(c =>
+    `<option value="${c.id}">${c.course_code} ${c.course_title} (level ${c.level})</option>`
+  ).join('');
+
+  const deptOptions = cache.depts.map(d => `<option value="${d.id}">${d.name}</option>`).join('');
+  sDept.innerHTML = deptOptions;
+  cDept.innerHTML = deptOptions;
+  pDept.innerHTML = deptOptions;
 }
-// Write
+
+async function openProfile(id) {
+  const r = await api('/api/v1/students/' + id + '/');
+  if (!r.ok) { say(studentMsg, errText(r.body), false); return; }
+  const s = r.body;
+
+  openStudentId = id;
+  disarmDelete();
+  profileMsg.className = 'msg';
+
+  pTitle.textContent = s.first_name + ' ' + s.last_name;
+  pSub.textContent   = s.matric_number + '  .  ' + deptName(s.department) + '  .  level ' + s.level;
+
+  pFirst.value  = s.first_name;
+  pLast.value   = s.last_name;
+  pMatric.value = s.matric_number;
+  pEmail.value  = s.email;
+  pDept.value   = s.department;
+  pLevel.value  = s.level;
+  pAge.value    = s.age;
+
+  pCourses.innerHTML = asList(s.courses).map(c =>
+    `<tr><td><span class="pill">${c.course_code}</span></td><td>${c.course_title}</td><td>${c.semester}</td><td>${c.course_unit}</td></tr>`
+  ).join('') || '<tr><td colspan="4">No courses match this department and level.</td></tr>';
+
+  const mine = cache.regs.filter(g => g.student === id);
+  pRegs.innerHTML = mine.map(g =>
+    `<tr><td>${regCourseName(g)}</td><td>${g.session}</td><td>${dateText(g)}</td></tr>`
+  ).join('') || '<tr><td colspan="3">Nothing registered yet.</td></tr>';
+
+  profileBack.classList.remove('hidden');
+}
+
+function closeProfile(e) {
+  if (e && e.target && e.target !== profileBack) return;
+  profileBack.classList.add('hidden');
+  openStudentId = null;
+  disarmDelete();
+}
+
+async function saveStudent(e) {
+  e.preventDefault();
+  if (!openStudentId) return;
+  const r = await api('/api/v1/students/' + openStudentId + '/', {
+    method: 'PATCH',
+    body: JSON.stringify({
+      first_name:    pFirst.value.trim(),
+      last_name:     pLast.value.trim(),
+      matric_number: pMatric.value.trim(),
+      email:         pEmail.value.trim(),
+      department:    Number(pDept.value),
+      level:         Number(pLevel.value),
+      age:           Number(pAge.value)
+    })
+  });
+  if (r.ok) {
+    say(profileMsg, 'Saved.', true);
+    pTitle.textContent = r.body.first_name + ' ' + r.body.last_name;
+    pSub.textContent   = r.body.matric_number + '  .  ' + deptName(r.body.department) + '  .  level ' + r.body.level;
+    await loadAll();
+  } else {
+    say(profileMsg, errText(r.body), false);
+  }
+}
+
+function disarmDelete() {
+  deleteArmed = false;
+  const b = document.querySelector('.btn.danger');
+  if (b) b.textContent = 'Delete student';
+}
+
+async function deleteStudent() {
+  if (!openStudentId) return;
+  const b = document.querySelector('.btn.danger');
+  if (!deleteArmed) {
+    deleteArmed = true;
+    b.textContent = 'Click again to confirm delete';
+    say(profileMsg, 'This cannot be undone. Click the red button again to confirm.', false);
+    return;
+  }
+  const r = await api('/api/v1/students/' + openStudentId + '/', { method: 'DELETE' });
+  if (r.ok || r.status === 204) {
+    profileBack.classList.add('hidden');
+    openStudentId = null;
+    disarmDelete();
+    say(studentMsg, 'Student deleted.', true);
+    await loadAll();
+  } else {
+    disarmDelete();
+    say(profileMsg, errText(r.body), false);
+  }
+}
+
+async function createStudent(e) {
+  e.preventDefault();
+  const r = await api('/api/v1/students/', {
+    method: 'POST',
+    body: JSON.stringify({
+      first_name:    sFirst.value.trim(),
+      last_name:     sLast.value.trim(),
+      matric_number: sMatric.value.trim(),
+      email:         sEmail.value.trim(),
+      department:    Number(sDept.value),
+      level:         Number(sLevel.value),
+      age:           Number(sAge.value)
+    })
+  });
+  if (r.ok) {
+    say(studentMsg, 'Student added: ' + r.body.first_name + ' ' + r.body.last_name, true);
+    sFirst.value = ''; sLast.value = ''; sMatric.value = ''; sEmail.value = ''; sAge.value = '';
+    await loadAll();
+  } else {
+    say(studentMsg, errText(r.body), false);
+  }
+}
+
+async function createCourse(e) {
+  e.preventDefault();
+  const r = await api('/api/v1/courses/', {
+    method: 'POST',
+    body: JSON.stringify({
+      course_code:  cCode.value.trim(),
+      course_title: cTitle.value.trim(),
+      department:   Number(cDept.value),
+      level:        Number(cLevel.value),
+      semester:     cSemester.value,
+      course_unit:  Number(cUnit.value)
+    })
+  });
+  if (r.ok) {
+    say(courseMsg, 'Course added: ' + r.body.course_code + ' ' + r.body.course_title, true);
+    cCode.value = ''; cTitle.value = ''; cUnit.value = '';
+    await loadAll();
+  } else {
+    say(courseMsg, errText(r.body), false);
+  }
+}
+
+async function createDepartment(e) {
+  e.preventDefault();
+  const r = await api('/api/v1/departments/', {
+    method: 'POST',
+    body: JSON.stringify({ name: dName.value.trim() })
+  });
+  if (r.ok) {
+    say(deptMsg, 'Department added: ' + r.body.name, true);
+    dName.value = '';
+    await loadAll();
+  } else {
+    say(deptMsg, errText(r.body), false);
+  }
+}
+
 async function registerCourse(e) {
   e.preventDefault();
-  const r = await api('/api/v1/register/', { method: 'POST', body: JSON.stringify({ student: Number(selStudent.value), course: Number(selCourse.value) }) });
-  if (r.ok) { regMsg.textContent = 'Registered: ' + r.body.student_name + ' into ' + r.body.course_title; regMsg.className = 'msg ok'; }
-  else { regMsg.textContent = Object.values(r.body).flat().join(' '); regMsg.className = 'msg err'; }
+  const studentId = Number(selStudent.value);
+  const courseId  = Number(selCourse.value);
+  const r = await api('/api/v1/register/', {
+    method: 'POST',
+    body: JSON.stringify({
+      student: studentId,
+      course:  courseId,
+      session: selSession.value.trim() || '2025/2026'
+    })
+  });
+  if (r.ok) {
+    say(regMsg, 'Registered: ' + (r.body.student_name || studentName(studentId)) + ' into ' + (r.body.course_title || courseName(courseId)), true);
+  } else {
+    say(regMsg, errText(r.body), false);
+  }
   await loadAll();
 }
 
 function show(tab, btn) {
   document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  ['students', 'courses', 'regs', 'depts'].forEach(t => document.getElementById('tab-' + t).classList.toggle('hidden', t !== tab));
+  ['students', 'courses', 'regs', 'depts'].forEach(t =>
+    document.getElementById('tab-' + t).classList.toggle('hidden', t !== tab)
+  );
 }
 
+setWho();
 if (token) {
   loginView.classList.add('hidden');
   appView.classList.remove('hidden');
